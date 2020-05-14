@@ -46,33 +46,34 @@ contract SolnSquareVerifier is CustomERC721Token {
         verifier = Verifier(verifierAddress);
     }
 
-    function addSolution(address _address, bytes32 key) public {
-        uint256 idx = solutionCounter.current();
-
-        solutions[key] = Solution({
-            _index: idx,
-            _address: _address,
-            exists: true
-        });
-
-        solutionCounter.increment();
-        emit SolutionAdded(idx, _address);
-    }
-
-    function mintNFT(
-        address _address,
-        uint256 tokenId,
+    function addSolution(
         uint256[2] memory a,
         uint256[2][2] memory b,
         uint256[2] memory c,
-        uint256[2] memory input
+        uint256[2] memory inputs
     ) public {
-        require(verifier.verifyTx(a, b, c, input), "solution is not valid");
-        bytes32 key = keccak256(abi.encodePacked(a, b, c, input));
+        bytes32 key = keccak256(abi.encodePacked(inputs[0], inputs[1]));
+        require(!solutions[key].exists, "Solution key is not unique!");
+        require(verifier.verifyTx(a, b, c, inputs), "solution is not valid");
 
-        require(solutions[key].exists, "Solution key is not unique!");
+        uint256 idx = solutionCounter.current();
+        solutions[key] = Solution({
+            _index: idx,
+            exists: true,
+            _address: msg.sender
+        });
 
-        addSolution(_address, key);
-        mint(_address, tokenId);
+        solutionCounter.increment();
+        emit SolutionAdded(idx, msg.sender);
+    }
+
+    function mintNFT(address to, uint256[2] memory inputs)
+        public
+        returns (bool)
+    {
+        bytes32 key = keccak256(abi.encodePacked(inputs[0], inputs[1]));
+        uint256 tokenId = solutions[key]._index;
+
+        return mint(to, tokenId);
     }
 }
