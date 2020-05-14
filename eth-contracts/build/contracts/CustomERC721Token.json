@@ -27932,7 +27932,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.11",
-  "updatedAt": "2020-05-14T19:36:36.863Z",
+  "updatedAt": "2020-05-14T19:50:21.822Z",
   "devdoc": {
     "methods": {
       "isApprovedForAll(address,address)": {
