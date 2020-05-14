@@ -17,9 +17,7 @@ contract('TestSquareVerifier', (accounts) => {
 
     it('should verify with a correct proof', async () => {
       const { proof, inputs } = PROOF_JSON
-      let { a, b, c } = proof
-
-      let a = ['0x0', '0x0']
+      const { a, b, c } = proof
 
       const expectedAnswer = true
       const answer = await this.contract.verifyTx.call(a, b, c, inputs)
@@ -29,9 +27,10 @@ contract('TestSquareVerifier', (accounts) => {
 
     it('should fail with an incorrect proof', async () => {
       const { proof, inputs } = PROOF_JSON
-      const { a, b, c } = proof
+      let { a, b, c } = proof
       const expectedAnswer = false
-
+      
+      a = ['0x0', '0x0']
       const answer = await this.contract.verifyTx.call(a, b, c, inputs)
 
       assert.equal(answer, expectedAnswer)
