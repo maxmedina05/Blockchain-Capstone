@@ -3,5 +3,38 @@
 // Test verification with correct proof
 // - use the contents from proof.json generated from zokrates steps
 
-    
 // Test verification with incorrect proof
+const Verifier = artifacts.require('Verifier')
+const PROOF_JSON = require('./proof.json')
+
+contract('TestSquareVerifier', (accounts) => {
+  const account_one = accounts[0]
+
+  describe('verify zokrates', () => {
+    beforeEach(async () => {
+      this.contract = await Verifier.new({ from: account_one })
+    })
+
+    it('should verify with a correct proof', async () => {
+      const { proof, inputs } = PROOF_JSON
+      let { a, b, c } = proof
+
+      let a = ['0x0', '0x0']
+
+      const expectedAnswer = true
+      const answer = await this.contract.verifyTx.call(a, b, c, inputs)
+
+      assert.equal(answer, expectedAnswer)
+    })
+
+    it('should fail with an incorrect proof', async () => {
+      const { proof, inputs } = PROOF_JSON
+      const { a, b, c } = proof
+      const expectedAnswer = false
+
+      const answer = await this.contract.verifyTx.call(a, b, c, inputs)
+
+      assert.equal(answer, expectedAnswer)
+    })
+  })
+})

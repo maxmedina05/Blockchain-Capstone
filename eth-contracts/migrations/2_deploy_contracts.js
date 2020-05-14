@@ -5,7 +5,7 @@ const SolnSquareVerifier = artifacts.require('./SolnSquareVerifier.sol')
 
 module.exports = function (deployer) {
   // deployer.deploy(ERC721Mintable);
-  deployer.deployer(Verifier).then(() => {
+  deployer.deploy(Verifier).then(() => {
     return deployer.deploy(SolnSquareVerifier, Verifier.address)
   })
 }
